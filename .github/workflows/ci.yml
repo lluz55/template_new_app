@@ -1,0 +1,126 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  flake-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # v14
+      - run: nix flake check
+
+  secrets-scan:
+    runs-on: ubuntu-latest
+    needs: flake-check
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # histórico completo — gitleaks varre todos os commits
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # v14
+      - name: "gitleaks (AGENTS.md: nunca commitar segredos/chaves)"
+        run: nix develop .#tools -c bash scripts/check-secrets.sh
+
+  lint-and-test:
+    runs-on: ubuntu-latest
+    needs: flake-check
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # v14
+
+      - name: dart format (checa sem escrever)
+        run: nix develop .#app-linux -c bash -c 'cd app && dart format --set-exit-if-changed .'
+
+      - name: dart analyze
+        run: nix develop .#app-linux -c bash -c 'cd app && flutter pub get && dart analyze --fatal-infos'
+
+      - name: flutter test
+        run: nix develop .#app-linux -c bash -c 'cd app && flutter test'
+
+      - name: go vet + go test (CLI)
+        run: nix develop .#cli -c bash -c 'cd cli && go vet ./... && go test ./...'
+
+      - name: gofmt (checa sem escrever)
+        run: |
+          nix develop .#cli -c bash -c '
+            unformatted=$(gofmt -l cli)
+            if [ -n "$unformatted" ]; then
+              echo "Arquivos Go não formatados:"; echo "$unformatted"; exit 1
+            fi
+          '
+
+      - name: Conformidade OKF
+        run: nix develop .#cli -c bash scripts/check-okf.sh
+
+      - name: perf-check (sem APK; inclui paridade de protocolo — ver scripts/perf-check.sh)
+        run: SKIP_APK=1 nix develop .#app-linux -c bash scripts/perf-check.sh
+
+  version-tag-consistency:
+    if: startsWith(github.ref, 'refs/tags/v')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Versão do pubspec.yaml deve bater com a tag (SPEC §15)
+        run: |
+          tag="${GITHUB_REF#refs/tags/v}"
+          pubspec_version=$(grep -m1 '^version:' app/pubspec.yaml | sed -E 's/version:\s*([0-9.]+).*/\1/')
+          if [ "$tag" != "$pubspec_version" ]; then
+            echo "Tag v$tag não bate com app/pubspec.yaml ($pubspec_version)"
+            exit 1
+          fi
+          echo "OK: tag v$tag == pubspec $pubspec_version"
+
+  release:
+    if: startsWith(github.ref, 'refs/tags/v')
+    needs: [lint-and-test, version-tag-consistency]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25 # v22
+      - uses: DeterminateSystems/magic-nix-cache-action@908b263ff629f4cc17666315b7fd3ec127c6244d # v14
+
+      - name: Gerar scaffolding de plataforma (não versionada — ver .gitignore)
+        run: nix develop .#app-linux -c bash scripts/bootstrap-platforms.sh
+
+      - name: Build Linux
+        run: nix develop .#app-linux -c bash -c 'cd app && flutter pub get && flutter build linux --release'
+
+      - name: Build Web
+        run: nix develop .#app-linux -c bash -c 'cd app && flutter build web --release'
+
+      - name: Build CLI
+        run: nix build .#cli -o result-cli
+
+      - name: Build APK
+        run: nix develop .#android -c bash -c 'cd app && flutter build apk --release --split-per-abi'
+
+      - name: Empacotar artefatos
+        run: |
+          mkdir -p build
+          tar -C app/build/linux/x64/release/bundle -czf build/app-linux.tar.gz .
+          tar -C app/build/web -czf build/web.tar.gz .
+          cp result-cli/bin/* build/cli-linux-amd64
+          find app/build/app/outputs -name '*.apk' -exec cp {} build/ \;
+          ( cd build && sha256sum * > checksums.txt )
+
+      - name: gh release create (SPEC §15)
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          version="${GITHUB_REF#refs/tags/}"
+          gh release create "$version" \
+            --title "$version" \
+            --notes-file CHANGELOG.md \
+            build/*

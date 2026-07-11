@@ -1,0 +1,18 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Performance (SPEC §11, scripts/check-flutter.sh checa a presença destas)
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_literals_to_create_immutables
+    - avoid_unnecessary_containers
+    - sized_box_for_whitespace
+    - unawaited_futures
+    - avoid_print
+
+analyzer:
+  exclude:
+    - lib/sync/proto/**    # gerado por scripts/gen-proto.sh, não lintado
+    - lib/l10n/gen/**      # gerado por `flutter gen-l10n` (ver l10n.yaml), não lintado
+    - "**/*.g.dart"

@@ -1,0 +1,23 @@
+{
+  "@@locale": "en",
+  "appTitle": "tpl_new_app",
+  "navItems": "Items",
+  "navSettings": "Settings",
+  "itemsEmptyState": "No items yet.",
+  "itemRemoveTooltip": "Remove",
+  "itemAddTooltip": "Add item",
+  "itemDialogTitle": "New item",
+  "itemDialogHint": "Title",
+  "actionCancel": "Cancel",
+  "actionAdd": "Add",
+  "itemsError": "Error: {error}",
+  "settingsScreenTitle": "Settings",
+  "settingsRelaysTitle": "Relays",
+  "settingsRelaysSubtitle": "Tap to edit the relay list (SPEC §7.3).",
+  "settingsRelaysEmpty": "No relays configured.",
+  "settingsRelaysDialogTitle": "Edit relays",
+  "settingsRelaysDialogHint": "One relay URL per line (wss://…)",
+  "actionSave": "Save",
+  "settingsVersionTitle": "Version",
+  "settingsVersionLoading": "loading…"
+}

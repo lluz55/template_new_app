@@ -1,0 +1,67 @@
+syntax = "proto3";
+
+// Schema do payload de sincronização (SPEC.md §7-8). Fonte única entre o
+// app Dart e a CLI Go — codegen via scripts/gen-proto.sh.
+//
+// Convenções:
+//   - schema_version evolui de forma compatível: campos novos são opcionais
+//     e clientes antigos devem ignorá-los com segurança. Mudanças
+//     incompatíveis incrementam schema_version (ver shared/PROTOCOL.md).
+//   - Valores de campo são serializados como JSON escalar (value_json) para
+//     permitir schema de domínio flexível sem precisar recompilar o proto a
+//     cada tabela/campo novo do domínio.
+package tpl_new_app.sync.v1;
+
+option go_package = "tpl_new_app/cli/internal/protocol/syncv1";
+
+// Hybrid Logical Clock — usado para ordenar mudanças e resolver conflitos
+// last-write-wins por campo (SPEC.md §6), sem coordenação central.
+message HybridLogicalClock {
+  int64 physical_ms = 1;  // relógio físico, ms desde epoch
+  uint32 logical = 2;     // contador lógico (desempate em mesmo ms)
+  string node_id = 3;     // id do dispositivo/instalação que gerou o HLC
+}
+
+// Uma mudança em um único campo de uma única linha. Deleção é modelada como
+// tombstone = true (soft delete — necessário para propagar remoções entre
+// dispositivos, ver SPEC.md §6).
+message FieldChange {
+  string table = 1;
+  string row_id = 2;
+  string field = 3;             // ignorado quando tombstone = true
+  string value_json = 4;        // ignorado quando tombstone = true
+  HybridLogicalClock hlc = 5;
+  bool tombstone = 6;
+}
+
+// Evento "changeset": deltas incrementais desde o último snapshot.
+// Publicado como evento Nostr de kind regular (ver PROTOCOL.md), cifrado
+// com NIP-44 v2 (auto-cifra).
+message Changeset {
+  uint32 schema_version = 1;
+  string device_id = 2;
+  repeated FieldChange changes = 3;
+  int64 created_at = 4;  // unix seconds, informativo — HLC é a ordem real
+}
+
+// Uma linha completa e compactada, usada no snapshot.
+message SnapshotRow {
+  string table = 1;
+  string row_id = 2;
+  map<string, string> fields_json = 3;  // nome do campo -> valor JSON
+  HybridLogicalClock updated_at = 4;
+  bool tombstone = 5;
+}
+
+// Evento "snapshot": estado completo compactado. Publicado como evento
+// addressable Nostr (NIP-78, kind 30078), cifrado com NIP-44 v2. Só o mais
+// recente é mantido pelos relays (mesma "d tag" por dispositivo/conta).
+message Snapshot {
+  uint32 schema_version = 1;
+  string device_id = 2;
+  repeated SnapshotRow rows = 3;
+  int64 created_at = 4;
+  // HLC physical_ms de corte: changesets com hlc.physical_ms > este valor
+  // ainda não estão refletidos no snapshot e devem ser reaplicados.
+  int64 changeset_watermark = 5;
+}

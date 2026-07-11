@@ -1,0 +1,54 @@
+# Nix
+.direnv/
+result
+result-*
+
+# Flutter / Dart
+app/.dart_tool/
+app/.flutter-plugins
+app/.flutter-plugins-dependencies
+app/.packages
+app/build/
+app/.metadata
+
+# Scaffolding nativa de plataforma (gerada por
+# scripts/bootstrap-platforms.sh / `flutter create`, ver README "Início
+# rápido") — não versionada, mesmo tratamento de app/lib/l10n/gen/ e
+# shared/proto/gen/. Se o projeto crescer customização nativa real
+# (ícones, permissões, gradle), reconsidere versionar e ajustar este
+# .gitignore para as exceções específicas (ex.: app/android/key.properties,
+# *.jks) em vez do diretório inteiro.
+app/android/
+app/linux/
+app/web/
+app/ios/
+app/macos/
+app/windows/
+
+# Go
+cli/*.exe
+/cli/bin/
+
+# Protobuf codegen (gerado por scripts/gen-proto.sh — não versionado, ver
+# shared/PROTOCOL.md §5). shared/proto/gen/ é um destino hipotético/genérico;
+# os dois reais, hoje, são estes:
+shared/proto/gen/
+app/lib/sync/proto/
+cli/internal/protocol/syncv1/
+
+# i18n codegen (gerado por `flutter gen-l10n` / `flutter pub get`, ver app/l10n.yaml)
+app/lib/l10n/gen/
+
+# Segredos — nunca commitar chaves Nostr/nsec/segredo do SQLCipher
+*.nsec
+*.pem
+*.key
+.env
+.env.*
+
+# Editor / OS
+.vscode/
+.idea/
+*.iml
+*.swp
+.DS_Store

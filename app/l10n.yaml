@@ -1,0 +1,9 @@
+# Configuração de i18n (SPEC §9.2). `pt` é o idioma-fonte (documentos do
+# projeto são em pt); `en` é a segunda tradução mantida desde o início para
+# forçar o hábito de nunca hardcodar string de UI.
+arb-dir: lib/l10n
+template-arb-file: app_pt.arb
+output-localization-file: app_localizations.dart
+output-class: AppLocalizations
+output-dir: lib/l10n/gen
+preferred-supported-locales: ["pt", "en"]

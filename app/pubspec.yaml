@@ -1,0 +1,66 @@
+name: tpl_new_app
+description: "Template offline-first multiplataforma (Android/Linux/Web) com sync descentralizado via Nostr."
+publish_to: 'none'
+
+# Fonte única da versão do app (SPEC §15) — nunca hardcode em runtime,
+# leia via package_info_plus (ver lib/ui/screens/settings_screen.dart).
+version: 0.1.0+1
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_localizations:
+    sdk: flutter
+
+  # Estado
+  flutter_riverpod: ^2.5.1
+
+  # Navegação / shell adaptativa (SPEC §9)
+  go_router: ^14.2.0
+
+  # Sistema de temas (SPEC §9.1): Material You quando disponível
+  # (Android/Linux/Windows/macOS), fallback determinístico nos demais.
+  dynamic_color: ^1.8.1
+
+  # Internacionalização (SPEC §9.2) — nenhuma string de UI hardcoded.
+  # Versão travada pelo SDK via flutter_localizations — não solte manualmente
+  # (ver `flutter pub add intl` no erro do `pub get` se o SDK mudar).
+  intl: ^0.20.2
+
+  # Persistência + CRDT local (SPEC §6)
+  sqlite_crdt: ^3.0.4
+  sqflite_common_ffi: ^2.3.3 # backend desktop (Linux) para sqlite_crdt
+  path_provider: ^2.1.4
+  path: ^1.9.0
+
+  # Chaves em storage seguro por plataforma (SPEC §10.1)
+  flutter_secure_storage: ^10.0.0
+
+  # Cliente Nostr: chaves/eventos/filtros (NIPs 01/19); NIP-44 e pool de
+  # relays são compostos por cima em app/lib/sync/ (ver SPEC §7 e
+  # knowledge/concepts/sync.md — wiring completo é Fase 3/4 do SPEC §17).
+  nostr: ^2.0.0
+  web_socket_channel: ^3.0.1
+
+  # Versão do app em runtime (SPEC §15) — nunca hardcoded.
+  package_info_plus: ^8.0.0
+
+  uuid: ^4.4.2
+  cupertino_icons: ^1.0.8
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+  # Dublê de WebSocketChannel em test/sync/relay_pool_test.dart (canal em
+  # memória, sem rede real) — já é dep transitiva de web_socket_channel,
+  # declarada aqui explicitamente porque o teste importa direto.
+  stream_channel: ^2.1.2
+
+flutter:
+  uses-material-design: true
+  generate: true # aciona `flutter gen-l10n` no `flutter pub get`/build (ver l10n.yaml)

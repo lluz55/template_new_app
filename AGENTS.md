@@ -127,7 +127,15 @@ Siga o guideline já estabelecido no [SPEC §9] e nos conceitos de `knowledge/`:
 - Toda tela nova cobre **light e dark** e as duas locales (`pt`/`en`) — não é
   opcional, é parte de "concluído" tanto quanto os três breakpoints.
 
-## Conteúdo de conhecimento: padrão OKF
+## Conhecimento do domínio: padrão OKF
+
+**Obrigatório:** antes de escrever código — em especial mudanças que toquem
+arquitetura, protocolo, segurança, sync ou modelo de dados — **leia, entenda
+e siga** o bundle OKF em `knowledge/`. Comece por
+[`knowledge/index.md`](/knowledge/index.md) e os conceitos relevantes em
+`knowledge/concepts/`; eles são a fonte de verdade sobre o "porquê" das
+decisões já tomadas. Não decida algo já coberto ali sem consultar antes, e
+não contradiga um conceito existente sem atualizá-lo.
 
 Ao **criar, editar ou remover** conhecimento (decisões, protocolo, contexto do
 domínio), faça no bundle OKF em `knowledge/` (ver [SPEC §8.1]):

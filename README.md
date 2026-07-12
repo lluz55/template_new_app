@@ -26,6 +26,28 @@ nix develop .#cli
 cd cli && go build ./... && go run . keygen
 ```
 
+## Usando este template para um projeto novo
+
+```bash
+# renomeia tpl_new_app -> nome do seu projeto em todo o repo (pacote Dart,
+# módulo Go, binário/usage da CLI, d-tag do protocolo Nostr, keystore, etc.)
+scripts/rename-template.sh --dry-run meu_projeto   # veja o que mudaria antes
+scripts/rename-template.sh meu_projeto             # [--org com.empresa] opcional
+```
+
+Depois de renomear: se `app/android|linux|web` já existiam localmente, apague
+e rode `scripts/bootstrap-platforms.sh` de novo (têm o nome antigo embutido
+e não são versionados — ver "Estrutura" abaixo).
+
+```bash
+# bump de versão (SPEC §15: fonte única em app/pubspec.yaml) + CHANGELOG.md
+scripts/bump-version.sh 0.2.0      # atualiza pubspec.yaml, flake.nix, CHANGELOG.md
+scripts/bump-version.sh --tag      # cria a tag git vX.Y.Z local (sem push)
+```
+
+Nenhum dos dois scripts commita ou dá push sozinho — revise o `git diff`
+antes. Detalhes/opções no cabeçalho de cada script.
+
 ## Estrutura
 
 Ver [SPEC §5](SPEC.md#5-estrutura-do-repositório) para o mapa completo do

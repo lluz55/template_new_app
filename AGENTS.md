@@ -46,6 +46,11 @@ scripts/bootstrap-platforms.sh   # gera app/android, app/linux, app/web
 # visão rápida do que falta implementar, agrupado por fase (SPEC §17)
 scripts/list-todos.sh
 
+# instanciar o template para um projeto novo (rename em todo o repo) e
+# bump de versão (SPEC §15) — nenhum dos dois commita/dá push sozinho
+scripts/rename-template.sh --dry-run novo_nome
+scripts/bump-version.sh 0.2.0
+
 # rodar
 cd app && flutter run -d linux        # ou -d chrome / apk
 
@@ -58,6 +63,23 @@ cd cli && go vet ./... && go test ./...
 # teste único (preferir escopo estreito)
 cd app && flutter test test/caminho_do_teste.dart
 ```
+
+### Convenções ao rodar comandos Flutter/Dart
+
+- **`flutter analyze`/`dart analyze`**: ao ler a saída, foque nos **erros** —
+  não pare a tarefa para corrigir warnings/infos por conta própria. Só
+  trate warnings se isso for **explicitamente pedido** (ex.: "corrija os
+  warnings do analyze"). Isso não muda os scripts do repo: `check-flutter.sh`
+  e o CI continuam usando `dart analyze --fatal-infos` de propósito (padrão
+  de qualidade do projeto) — a diferença é só o que exige ação imediata
+  durante o trabalho.
+- **Comandos `flutter`** que suportam `--[no-]pub` (`test`, `run`, `build
+  apk/web/linux`, `analyze`, entre outros — `dart analyze`/`dart format` não
+  têm esse flag, já não rodam pub get): use **`--no-pub`** por padrão, já
+  que `flutter pub get` já roda explicitamente quando necessário (ver
+  Comandos acima). Só omita `--no-pub` (ou rode `flutter pub get` antes)
+  quando `pubspec.yaml`/`pubspec.lock` mudaram desde a última execução, ou
+  quando pedirem explicitamente.
 
 ## Estrutura (capacidades, não caminhos fixos)
 
@@ -120,6 +142,10 @@ domínio), faça no bundle OKF em `knowledge/` (ver [SPEC §8.1]):
 - A versão é única em `app/pubspec.yaml` (SemVer) e **o app exibe a versão do
   release corrente** em runtime (`package_info_plus`) — nunca hardcoded.
 - Em release, a versão **deve** bater com a tag Git `vX.Y.Z` (checado no CI).
+- Use `scripts/bump-version.sh X.Y.Z` para atualizar `pubspec.yaml`,
+  `flake.nix` (`packages.cli.version`) e mover `[Unreleased]` do
+  `CHANGELOG.md` para uma seção datada — não edite esses três a mão para não
+  desalinhar. `scripts/bump-version.sh --tag` cria a tag local (sem push).
 - Releases são feitos no GitHub com a **`gh` CLI**, anexando os artefatos e
   `checksums.txt` (ver [SPEC §15]):
   ```bash
@@ -131,6 +157,13 @@ domínio), faça no bundle OKF em `knowledge/` (ver [SPEC §8.1]):
 
 - Commits em **Conventional Commits** (`feat:`, `fix:`, `perf:`, `docs:` …).
 - PR só entra com `dart format`, `dart analyze` e `scripts/perf-check.sh` verdes.
+- **REGRA MANDATÓRIA, sem exceção:** nenhuma mensagem de commit (nem PR)
+  pode conter `Co-Authored-By`, "Generated with", assinatura de ferramenta
+  de IA, ou qualquer variação que atribua coautoria a um agente/LLM —
+  mesmo que o comportamento padrão do agente/ferramenta usado sugira
+  adicionar isso automaticamente. Se a ferramenta inserir isso por padrão,
+  **remova antes de commitar**. Autoria do commit é sempre só do humano
+  responsável pela sessão.
 
 ## Fronteiras
 
@@ -139,15 +172,17 @@ unitários, rodar os scripts de checagem.
 
 **Pergunte antes:** instalar dependências novas, `git push`, apagar arquivos,
 mexer em `flake.nix`/lockfiles, alterar o formato do protocolo em `shared/`,
-publicar releases.
+publicar releases, rodar `scripts/rename-template.sh` (reescreve nome de
+projeto em ~20 arquivos de uma vez — só faça se pedirem explicitamente).
 
 **Nunca:** commitar segredos/chaves, adicionar telemetria, reduzir verificação
 de assinatura ou cifra, hardcodar a versão do app, publicar payload não
 cifrado, instalar toolchains (Flutter, Go, Android SDK/NDK) fora do ambiente
 Nix, trocar a origem do Android SDK para algo diferente do flake input
 `github:tadfisher/android-nixpkgs` sem alinhar antes, hardcodar cor/spacing
-fora de `app/lib/ui/theme/`, ou hardcodar string de UI fora do sistema de
-i18n (`app/lib/l10n/`).
+fora de `app/lib/ui/theme/`, hardcodar string de UI fora do sistema de i18n
+(`app/lib/l10n/`), ou **adicionar `Co-Authored-By`/atribuição de coautoria de
+IA em commits ou PRs** (ver "Git" acima — mandatório, sem exceção).
 
 ## Quando estiver em dúvida
 

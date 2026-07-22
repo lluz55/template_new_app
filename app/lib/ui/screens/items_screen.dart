@@ -1,3 +1,4 @@
+import 'package:dl_concept/dl_concept.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -61,28 +62,12 @@ class ItemsScreen extends ConsumerWidget {
     WidgetRef ref,
     AppLocalizations l10n,
   ) async {
-    final controller = TextEditingController();
-    final title = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.itemDialogTitle),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          decoration: InputDecoration(hintText: l10n.itemDialogHint),
-          onSubmitted: (value) => Navigator.of(context).pop(value),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.actionCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(controller.text),
-            child: Text(l10n.actionAdd),
-          ),
-        ],
-      ),
+    final title = await showAppTextInputDialog(
+      context,
+      title: l10n.itemDialogTitle,
+      hint: l10n.itemDialogHint,
+      cancelLabel: l10n.actionCancel,
+      confirmLabel: l10n.actionAdd,
     );
 
     if (title != null && title.trim().isNotEmpty) {

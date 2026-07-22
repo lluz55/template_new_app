@@ -12,6 +12,9 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 - `AdaptiveScaffold` / `AdaptiveDestination` — shell de navegação adaptativa
   (`NavigationBar`/`NavigationRail`/`NavigationDrawer`), integrada a
   `StatefulNavigationShell` do `go_router`.
+- `showAppTextInputDialog` — `AlertDialog` com um `TextField` e ações
+  cancelar/confirmar; extraído de `ItemsScreen`/`SettingsScreen`, que
+  repetiam o mesmo padrão para pedir um texto curto ou multilinha.
 
 ## Uso
 

@@ -1,3 +1,4 @@
+import 'package:dl_concept/dl_concept.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:package_info_plus/package_info_plus.dart';
@@ -70,29 +71,15 @@ class SettingsScreen extends ConsumerWidget {
     AppLocalizations l10n,
     List<String> currentUrls,
   ) async {
-    final controller = TextEditingController(text: currentUrls.join('\n'));
-    final result = await showDialog<String>(
-      context: context,
-      builder: (context) => AlertDialog(
-        title: Text(l10n.settingsRelaysDialogTitle),
-        content: TextField(
-          controller: controller,
-          autofocus: true,
-          minLines: 3,
-          maxLines: 6,
-          decoration: InputDecoration(hintText: l10n.settingsRelaysDialogHint),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(),
-            child: Text(l10n.actionCancel),
-          ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(controller.text),
-            child: Text(l10n.actionSave),
-          ),
-        ],
-      ),
+    final result = await showAppTextInputDialog(
+      context,
+      title: l10n.settingsRelaysDialogTitle,
+      hint: l10n.settingsRelaysDialogHint,
+      initialText: currentUrls.join('\n'),
+      minLines: 3,
+      maxLines: 6,
+      cancelLabel: l10n.actionCancel,
+      confirmLabel: l10n.actionSave,
     );
 
     if (result == null) return;

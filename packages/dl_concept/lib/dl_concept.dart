@@ -7,3 +7,4 @@ export 'src/theme/app_theme.dart';
 export 'src/theme/app_spacing.dart';
 export 'src/nav/breakpoint.dart';
 export 'src/nav/adaptive_scaffold.dart';
+export 'src/dialogs/text_input_dialog.dart';

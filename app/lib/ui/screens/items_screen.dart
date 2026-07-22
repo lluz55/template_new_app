@@ -22,9 +22,9 @@ class ItemsScreen extends ConsumerWidget {
       body: itemsAsync.when(
         data: (items) {
           if (items.isEmpty) {
-            return Padding(
-              padding: EdgeInsets.all(context.spacing.lg),
-              child: Center(child: Text(l10n.itemsEmptyState)),
+            return AppEmptyState(
+              icon: Icons.checklist_outlined,
+              message: l10n.itemsEmptyState,
             );
           }
           return ListView.builder(
@@ -47,17 +47,23 @@ class ItemsScreen extends ConsumerWidget {
                   secondary: IconButton(
                     icon: const Icon(Icons.delete_outline),
                     tooltip: l10n.itemRemoveTooltip,
-                    onPressed: () =>
-                        ref.read(itemRepositoryProvider).remove(item.id),
+                    onPressed: () => _confirmAndRemoveItem(
+                      context,
+                      ref,
+                      l10n,
+                      id: item.id,
+                      title: item.title,
+                    ),
                   ),
                 ),
               );
             },
           );
         },
-        error: (error, stack) => Padding(
-          padding: EdgeInsets.all(context.spacing.lg),
-          child: Center(child: Text(l10n.itemsError(error.toString()))),
+        error: (error, stack) => AppEmptyState(
+          icon: Icons.error_outline,
+          message: l10n.itemsError(error.toString()),
+          iconColor: Theme.of(context).colorScheme.error,
         ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
@@ -84,6 +90,27 @@ class ItemsScreen extends ConsumerWidget {
 
     if (title != null && title.trim().isNotEmpty) {
       await ref.read(itemRepositoryProvider).add(title.trim());
+    }
+  }
+
+  Future<void> _confirmAndRemoveItem(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n, {
+    required String id,
+    required String title,
+  }) async {
+    final confirmed = await showAppConfirmDialog(
+      context,
+      title: l10n.itemDeleteConfirmTitle,
+      message: l10n.itemDeleteConfirmMessage(title),
+      cancelLabel: l10n.actionCancel,
+      confirmLabel: l10n.itemRemoveTooltip,
+      destructive: true,
+    );
+
+    if (confirmed) {
+      await ref.read(itemRepositoryProvider).remove(id);
     }
   }
 }

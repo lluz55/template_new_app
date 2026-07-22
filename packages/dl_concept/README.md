@@ -18,6 +18,13 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 - `showAppTextInputDialog` — `AlertDialog` com um `TextField` e ações
   cancelar/confirmar; extraído de `ItemsScreen`/`SettingsScreen`, que
   repetiam o mesmo padrão para pedir um texto curto ou multilinha.
+- `showAppConfirmDialog` — `AlertDialog` de confirmação simples
+  (título/mensagem opcional + cancelar/confirmar), com variante
+  `destructive` (botão de confirmar em `colorScheme.error`) para ações
+  irreversíveis; usado em `ItemsScreen` antes de remover um item.
+- `AppEmptyState` — ícone + mensagem centralizados, para o par "sem
+  dados"/"erro ao carregar" que aparece nos dois ramos não-`loading` de
+  qualquer `AsyncValue.when()`; `iconColor` diferencia o caso de erro.
 
 ## Uso
 

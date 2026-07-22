@@ -11,6 +11,8 @@
   "actionCancel": "Cancel",
   "actionAdd": "Add",
   "itemsError": "Error: {error}",
+  "itemDeleteConfirmTitle": "Remove item?",
+  "itemDeleteConfirmMessage": "This will remove \"{title}\" from the list.",
   "settingsScreenTitle": "Settings",
   "settingsRelaysTitle": "Relays",
   "settingsRelaysSubtitle": "Tap to edit the relay list (SPEC §7.3).",

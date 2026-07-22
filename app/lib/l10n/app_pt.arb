@@ -16,6 +16,13 @@
       "error": { "type": "String" }
     }
   },
+  "itemDeleteConfirmTitle": "Remover item?",
+  "itemDeleteConfirmMessage": "Isso vai remover \"{title}\" da lista.",
+  "@itemDeleteConfirmMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
   "settingsScreenTitle": "Configurações",
   "settingsRelaysTitle": "Relays",
   "settingsRelaysSubtitle": "Toque para editar a lista de relays (SPEC §7.3).",

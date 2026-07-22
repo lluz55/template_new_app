@@ -134,6 +134,8 @@ Siga o guideline já estabelecido no [SPEC §9] e nos conceitos de `docs/okf/`:
 
 ## Conhecimento do domínio: padrão OKF
 
+É **imprescindível o uso da skill OKF** para estudar, planejar, acompanhar features/bug fixes e realizar review de código em geral.
+
 **Obrigatório:** antes de escrever código — em especial mudanças que toquem
 arquitetura, protocolo, segurança, sync ou modelo de dados — **leia, entenda
 e siga** o bundle OKF em `docs/okf/`. Comece por
@@ -141,6 +143,8 @@ e siga** o bundle OKF em `docs/okf/`. Comece por
 `docs/okf/concepts/`; eles são a fonte de verdade sobre o "porquê" das
 decisões já tomadas. Não decida algo já coberto ali sem consultar antes, e
 não contradiga um conceito existente sem atualizá-lo.
+
+Antes de adicionar código, cheque se há tarefas incompletas. Ao finalizar tarefas, marque-as como concluídas.
 
 Ao **criar, editar ou remover** conhecimento (decisões, protocolo, contexto do
 domínio), faça no bundle OKF em `docs/okf/` (ver [SPEC §8.1]):

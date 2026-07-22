@@ -1,0 +1,29 @@
+name: dl_concept
+description: >
+  Sistema de design (tema Material 3 + navegação adaptativa) reutilizável
+  entre projetos Flutter deste template e derivados.
+publish_to: 'none'
+version: 0.1.0
+
+environment:
+  sdk: '>=3.4.0 <4.0.0'
+  flutter: '>=3.24.0'
+
+dependencies:
+  flutter:
+    sdk: flutter
+
+  # AdaptiveScaffold consome StatefulNavigationShell do go_router —
+  # dependência intencional (projetos consumidores usam go_router; não
+  # desacoplar especulativamente aqui). Mesma major do app/pubspec.yaml para
+  # não abrir conflito de versão no solver do pub quando este pacote é usado
+  # via path dependency no mesmo grafo.
+  go_router: ^14.2.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true

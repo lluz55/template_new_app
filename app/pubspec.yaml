@@ -22,8 +22,17 @@ dependencies:
   # Navegação / shell adaptativa (SPEC §9)
   go_router: ^14.2.0
 
+  # Sistema de design (tema + navegação adaptativa) — extraído para pacote
+  # reutilizável entre projetos (ver packages/dl_concept/README.md). Outros
+  # projetos instanciados deste template podem depender dele via git
+  # dependency + path apontando pro subdiretório.
+  dl_concept:
+    path: ../packages/dl_concept
+
   # Sistema de temas (SPEC §9.1): Material You quando disponível
-  # (Android/Linux/Windows/macOS), fallback determinístico nos demais.
+  # (Android/Linux/Windows/macOS), fallback determinístico nos demais — os
+  # tokens (AppTheme/AppSpacing) vêm de package:dl_concept; dynamic_color só
+  # fornece o ColorScheme dinâmico.
   dynamic_color: ^1.8.1
 
   # Internacionalização (SPEC §9.2) — nenhuma string de UI hardcoded.
@@ -42,7 +51,7 @@ dependencies:
 
   # Cliente Nostr: chaves/eventos/filtros (NIPs 01/19); NIP-44 e pool de
   # relays são compostos por cima em app/lib/sync/ (ver SPEC §7 e
-  # knowledge/concepts/sync.md — wiring completo é Fase 3/4 do SPEC §17).
+  # docs/okf/concepts/sync.md — wiring completo é Fase 3/4 do SPEC §17).
   nostr: ^2.0.0
   web_socket_channel: ^3.0.1
 

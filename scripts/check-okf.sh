@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# check-okf.sh — conformidade mínima do bundle OKF em knowledge/.
+# check-okf.sh — conformidade mínima do bundle OKF em docs/okf/.
 # Regras OKF v0.1 checadas:
 #   1) frontmatter YAML presente e parseável
 #   2) campo `type` presente em cada conceito
@@ -11,8 +11,8 @@
 set -uo pipefail
 
 ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
-BUNDLE="$ROOT/knowledge"
-[ -d "$BUNDLE" ] || { echo "knowledge/ não encontrado — pulando"; exit 0; }
+BUNDLE="$ROOT/docs/okf"
+[ -d "$BUNDLE" ] || { echo "docs/okf/ não encontrado — pulando"; exit 0; }
 
 # Ferramenta oficial, se existir
 if command -v okf-lint >/dev/null 2>&1; then
@@ -25,7 +25,7 @@ status=0
 # Regra 3: reservados
 for f in index.md log.md; do
   if [ ! -f "$BUNDLE/$f" ]; then
-    echo "✗ arquivo reservado ausente: knowledge/$f"
+    echo "✗ arquivo reservado ausente: docs/okf/$f"
     status=1
   fi
 done

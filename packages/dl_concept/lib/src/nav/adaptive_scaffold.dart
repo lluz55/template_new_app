@@ -15,7 +15,7 @@ class AdaptiveDestination {
   final String label;
 }
 
-/// Shell de navegação única (SPEC §9): decide `NavigationBar` (compact),
+/// Shell de navegação única: decide `NavigationBar` (compact),
 /// `NavigationRail` (medium) ou `NavigationDrawer` fixa (expanded) por
 /// `LayoutBuilder`, preservando o estado das abas via
 /// `StatefulNavigationShell` do go_router.

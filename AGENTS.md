@@ -7,13 +7,15 @@ mudanças arquiteturais.
 ## Stack
 
 - **App:** Flutter (Material 3), Dart. Estado: Riverpod. Rotas: go_router.
-- **Tema:** sistema de tokens próprio (`app/lib/ui/theme/`) + Material You
-  via `dynamic_color`. **i18n:** `flutter_localizations`/`intl`, `pt`+`en`
+- **Tema e navegação adaptativa:** pacote local `packages/dl_concept/`
+  (`package:dl_concept`) — `AppTheme`/`AppSpacing`, `AdaptiveScaffold`,
+  `breakpointForWidth`. Material You via `dynamic_color`, wireado em
+  `app/lib/main.dart`. **i18n:** `flutter_localizations`/`intl`, `pt`+`en`
   desde o início. Ver [SPEC §9.1/§9.2].
 - **Persistência:** `sqlite_crdt` (HLC/LWW) + SQLCipher.
 - **Sync:** cliente Nostr em Dart, payloads cifrados NIP-44. Ver [SPEC §7].
 - **CLI opcional:** Go + `go-nostr`.
-- **Build:** Nix flakes. **Conhecimento:** bundle OKF em `knowledge/`.
+- **Build:** Nix flakes. **Conhecimento:** bundle OKF em `docs/okf/`.
 
 ## Ambiente de desenvolvimento (Nix/NixOS obrigatório)
 
@@ -54,9 +56,10 @@ scripts/bump-version.sh 0.2.0
 # rodar
 cd app && flutter run -d linux        # ou -d chrome / apk
 
-# checagens (rode ANTES de commitar)
-dart format . && dart analyze --fatal-infos
-scripts/perf-check.sh                 # perf, OKF, versão↔tag (ver SPEC §11.4)
+# checagens (rode ANTES de commitar) — cobre app/ e packages/dl_concept/
+(cd app && dart format . && dart analyze --fatal-infos)
+(cd packages/dl_concept && dart format . && dart analyze --fatal-infos)
+scripts/perf-check.sh                 # perf, OKF, versão↔tag (ver SPEC §11.4) — já roda os dois via check-flutter.sh
 scripts/check-secrets.sh              # gitleaks — nunca commitar chave/nsec
 cd cli && go vet ./... && go test ./...
 
@@ -83,13 +86,15 @@ cd app && flutter test test/caminho_do_teste.dart
 
 ## Estrutura (capacidades, não caminhos fixos)
 
-- UI e navegação adaptativa (barra/rail/drawer) vivem em `app/lib/ui/`;
-  tema em `app/lib/ui/theme/`.
+- Telas vivem em `app/lib/ui/`. Navegação adaptativa (barra/rail/drawer) e
+  tema (design tokens) vivem no pacote `packages/dl_concept/`
+  (`package:dl_concept`), consumido via path dependency — não redefina esses
+  componentes no app, estenda o pacote.
 - i18n (`.arb` + código gerado) em `app/lib/l10n/` — config em `app/l10n.yaml`.
 - Store local + repositórios em `app/lib/data/`; sync/Nostr em `app/lib/sync/`.
 - Chaves e cripto em `app/lib/crypto/`.
 - Protocolo compartilhado (Dart↔Go) em `shared/`.
-- Detalhes e o "porquê" das decisões: bundle OKF em `knowledge/`.
+- Detalhes e o "porquê" das decisões: bundle OKF em `docs/okf/`.
 
 ## Ao alterar/inserir código: segurança e performance
 
@@ -109,8 +114,8 @@ Performance (ver [SPEC §11]):
 
 ## Design e código
 
-Siga o guideline já estabelecido no [SPEC §9] e nos conceitos de `knowledge/`:
-- **Não** hardcode cores/spacing — use os tokens de `app/lib/ui/theme/`
+Siga o guideline já estabelecido no [SPEC §9] e nos conceitos de `docs/okf/`:
+- **Não** hardcode cores/spacing — use os tokens de `package:dl_concept`
   (`ColorScheme`/`AppTheme`, `AppSpacing` via `context.spacing`). Ver [SPEC §9.1].
 - **Não** hardcode string de UI — toda string visível ao usuário vai em
   `app/lib/l10n/app_pt.arb` **e** `app_en.arb`, acessada via
@@ -131,14 +136,14 @@ Siga o guideline já estabelecido no [SPEC §9] e nos conceitos de `knowledge/`:
 
 **Obrigatório:** antes de escrever código — em especial mudanças que toquem
 arquitetura, protocolo, segurança, sync ou modelo de dados — **leia, entenda
-e siga** o bundle OKF em `knowledge/`. Comece por
-[`knowledge/index.md`](/knowledge/index.md) e os conceitos relevantes em
-`knowledge/concepts/`; eles são a fonte de verdade sobre o "porquê" das
+e siga** o bundle OKF em `docs/okf/`. Comece por
+[`docs/okf/index.md`](/docs/okf/index.md) e os conceitos relevantes em
+`docs/okf/concepts/`; eles são a fonte de verdade sobre o "porquê" das
 decisões já tomadas. Não decida algo já coberto ali sem consultar antes, e
 não contradiga um conceito existente sem atualizá-lo.
 
 Ao **criar, editar ou remover** conhecimento (decisões, protocolo, contexto do
-domínio), faça no bundle OKF em `knowledge/` (ver [SPEC §8.1]):
+domínio), faça no bundle OKF em `docs/okf/` (ver [SPEC §8.1]):
 - Cada conceito é um `.md` com frontmatter YAML e campo **`type`** obrigatório.
 - Mantenha `index.md` e `log.md` (reservados); registre mudanças relevantes no
   `log.md`.
@@ -188,9 +193,10 @@ de assinatura ou cifra, hardcodar a versão do app, publicar payload não
 cifrado, instalar toolchains (Flutter, Go, Android SDK/NDK) fora do ambiente
 Nix, trocar a origem do Android SDK para algo diferente do flake input
 `github:tadfisher/android-nixpkgs` sem alinhar antes, hardcodar cor/spacing
-fora de `app/lib/ui/theme/`, hardcodar string de UI fora do sistema de i18n
-(`app/lib/l10n/`), ou **adicionar `Co-Authored-By`/atribuição de coautoria de
-IA em commits ou PRs** (ver "Git" acima — mandatório, sem exceção).
+fora de `package:dl_concept` (`packages/dl_concept/`), hardcodar string de UI
+fora do sistema de i18n (`app/lib/l10n/`), ou **adicionar `Co-Authored-By`/
+atribuição de coautoria de IA em commits ou PRs** (ver "Git" acima —
+mandatório, sem exceção).
 
 ## Quando estiver em dúvida
 

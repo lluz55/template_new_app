@@ -9,7 +9,7 @@
 # divergirem silenciosamente.
 #
 # Não é o teste de interoperabilidade completo do SPEC §16 (esse precisa do
-# protobuf real, Fase 4/5, ver knowledge/concepts/testing.md) — só garante
+# protobuf real, Fase 4/5, ver docs/okf/concepts/testing.md) — só garante
 # que as constantes hoje presentes concordam.
 set -uo pipefail
 

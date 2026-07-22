@@ -2,9 +2,9 @@ import 'dart:ui';
 
 import 'package:flutter/material.dart';
 
-/// Tokens de espaçamento/raio (SPEC §9.1) — nunca hardcode um valor de
-/// espaçamento num widget; adicione/reuse um token aqui. Acesso via
-/// `context.spacing` (extension abaixo).
+/// Tokens de espaçamento/raio — nunca hardcode um valor de espaçamento num
+/// widget; adicione/reuse um token aqui. Acesso via `context.spacing`
+/// (extension abaixo).
 @immutable
 class AppSpacing extends ThemeExtension<AppSpacing> {
   const AppSpacing({

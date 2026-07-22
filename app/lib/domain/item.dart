@@ -2,7 +2,7 @@
 /// de itens (criar/editar/apagar) que sincroniza entre dispositivos.
 ///
 /// Não depende de Flutter, SQLite ou Nostr — camada de domínio pura
-/// (ver knowledge/concepts/architecture.md).
+/// (ver docs/okf/concepts/architecture.md).
 class Item {
   const Item({
     required this.id,

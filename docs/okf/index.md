@@ -29,6 +29,12 @@ Para a especificação-fonte completa, ver [SPEC.md](/SPEC.md).
 | [i18n.md](concepts/i18n.md) | `architecture-decision` | i18n desde a fundação (pt/en), `.arb`, nunca string hardcoded |
 | [performance.md](concepts/performance.md) | `architecture-decision` | Orçamentos de performance e como os scripts de checagem os aplicam |
 | [testing.md](concepts/testing.md) | `testing` | Onde cada camada de teste vive, convenção de nomes, armadilha `pumpAndSettle()` × spinner indeterminado |
+| [tasks.md](concepts/tasks.md) | `process` | Rastreamento de trabalho pendente em dois níveis: `TODO(fase-N)`/`"Fase N"` no código + arquivos por fase em [`tasks/`](tasks/index.md) |
+
+## Tarefas por fase
+
+Progresso por fase (SPEC §17) em [`tasks/index.md`](tasks/index.md) — um
+arquivo por fase com checklist e status.
 
 ## Arquivos reservados
 

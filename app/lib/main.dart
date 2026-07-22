@@ -1,3 +1,4 @@
+import 'package:dl_concept/dl_concept.dart';
 import 'package:dynamic_color/dynamic_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -6,7 +7,6 @@ import 'data/local/app_database.dart';
 import 'data/providers.dart';
 import 'l10n/gen/app_localizations.dart';
 import 'ui/router.dart';
-import 'ui/theme/app_theme.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

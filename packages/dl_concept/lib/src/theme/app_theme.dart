@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 import 'app_spacing.dart';
 
-/// Sistema de temas único (SPEC §9.1): cores, tipografia e espaçamento nunca
-/// são hardcoded em widgets — tudo vem daqui. Toda tela/feature nova
-/// consome estes tokens (ou propõe uma extensão neles), nunca um valor
-/// solto. Cobre Material You (`dynamicScheme`, ver `main.dart`/
-/// `DynamicColorBuilder`) com fallback determinístico por seed color.
+/// Sistema de temas único: cores, tipografia e espaçamento nunca são
+/// hardcoded em widgets — tudo vem daqui. Toda tela/feature nova consome
+/// estes tokens (ou propõe uma extensão neles), nunca um valor solto. Cobre
+/// Material You (`dynamicScheme`, tipicamente vindo de um
+/// `DynamicColorBuilder` no app consumidor) com fallback determinístico por
+/// seed color.
 class AppTheme {
   const AppTheme._();
 

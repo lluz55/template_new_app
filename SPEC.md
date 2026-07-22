@@ -105,7 +105,7 @@ assíncrona e em segundo plano. O app é totalmente funcional offline.
 .
 ├── app/                 # Flutter (Android/Linux/Web)
 │   ├── lib/
-│   │   ├── ui/          # telas, nav adaptativa, tema (ui/theme/, ver §9.1)
+│   │   ├── ui/          # telas (nav adaptativa e tema vêm de packages/dl_concept/, ver §9.1)
 │   │   ├── domain/      # modelos, casos de uso
 │   │   ├── data/        # store local (sqlite_crdt), repositórios
 │   │   ├── sync/        # sync engine + cliente Nostr
@@ -113,16 +113,21 @@ assíncrona e em segundo plano. O app é totalmente funcional offline.
 │   │   └── l10n/        # arquivos .arb + código gerado (ver §9.2)
 │   ├── l10n.yaml        # config de codegen do i18n
 │   └── pubspec.yaml
+├── packages/
+│   └── dl_concept/      # design system reutilizável: tema + nav adaptativa (§9.1)
+│       ├── lib/
+│       └── test/
 ├── cli/                 # Go (go-nostr)
 │   ├── cmd/
 │   └── internal/
 ├── shared/              # protocolo compartilhado
 │   ├── proto/           # schema protobuf do changeset
 │   └── PROTOCOL.md      # kinds Nostr, formato de payload
-├── knowledge/           # bundle OKF (conhecimento do domínio) — ver §8.1
-│   ├── index.md         # reservado OKF
-│   ├── log.md           # reservado OKF (histórico de curadoria)
-│   └── concepts/        # conceitos: data-model, sync, security, ...
+├── docs/
+│   └── okf/             # bundle OKF (conhecimento do domínio) — ver §8.1
+│       ├── index.md     # reservado OKF
+│       ├── log.md       # reservado OKF (histórico de curadoria)
+│       └── concepts/    # conceitos: data-model, sync, security, ...
 ├── scripts/             # checagens (perf, OKF lint) — ver §11.4
 ├── AGENTS.md            # instruções para agentes de IA
 ├── flake.nix
@@ -206,7 +211,7 @@ armazenam.
 
 O conhecimento do projeto (o que existe no domínio: modelo de dados, protocolo
 de sync, kinds Nostr, modelo de segurança, decisões arquiteturais) é mantido
-como um **bundle OKF (Open Knowledge Format)** em `knowledge/`.
+como um **bundle OKF (Open Knowledge Format)** em `docs/okf/`.
 
 OKF é uma spec aberta (Google Cloud, Apache 2.0) que representa conhecimento
 como **Markdown + YAML frontmatter** versionado em Git. Regras adotadas:
@@ -217,7 +222,7 @@ como **Markdown + YAML frontmatter** versionado em Git. Regras adotadas:
 - Arquivos **reservados**: `index.md` (índice do bundle) e `log.md` (histórico
   de curadoria do conhecimento).
 - **Cross-links** entre conceitos via links Markdown relativos
-  (`[...](/knowledge/concepts/sync.md)`).
+  (`[...](/docs/okf/concepts/sync.md)`).
 - Conformidade validável em CI (frontmatter parseável, `type` presente,
   reservados corretos) — ver §11.4 / §15.
 
@@ -264,9 +269,10 @@ Breakpoints Material 3 (largura em dp lógicos):
 
 ### 9.1 Sistema de temas (design tokens)
 
-**Requisito:** existe um **sistema de temas único** (`app/lib/ui/theme/`) —
-cores, tipografia, espaçamento e formas nunca são hardcoded em widgets; tudo
-vem de tokens centralizados. Isso vale desde o primeiro commit e **por toda
+**Requisito:** existe um **sistema de temas único**, no pacote reutilizável
+`packages/dl_concept/` (`package:dl_concept`) — cores, tipografia,
+espaçamento e formas nunca são hardcoded em widgets; tudo vem de tokens
+centralizados. Isso vale desde o primeiro commit e **por toda
 a manutenção** do app: toda tela/feature nova consome os tokens existentes
 ou propõe uma extensão neles, nunca um valor solto.
 
@@ -283,7 +289,7 @@ ou propõe uma extensão neles, nunca um valor solto.
   nunca fixar `textScaleFactor` nem tamanhos de fonte absolutos que ignorem
   a preferência do usuário.
 - Checklist (mesmo peso do de segurança/performance):
-  - [ ] Nenhuma cor/spacing hardcoded fora de `app/lib/ui/theme/`
+  - [ ] Nenhuma cor/spacing hardcoded fora de `package:dl_concept` (`packages/dl_concept/`)
   - [ ] Light e dark cobertos para toda tela nova
   - [ ] Testado nos três breakpoints (§9)
   - [ ] Material You ligado (com fallback determinístico) via `dynamic_color`
@@ -615,9 +621,10 @@ gh release create "v${VERSION}" \
 
 ## 16. Testes e CI
 
-- **Dart:** testes de unidade (domínio, merge CRDT, cifra), widget tests da nav
-  adaptativa nos três breakpoints (celular/tablet/desktop), testes de
-  integração do fluxo de sync.
+- **Dart:** testes de unidade (domínio, merge CRDT, cifra), testes de
+  integração do fluxo de sync no `app/`; testes de unidade
+  (`breakpointForWidth`) e widget tests da shell adaptativa nos três
+  breakpoints (celular/tablet/desktop) em `packages/dl_concept/test/`.
 - **Go:** testes de unidade da CLI e da (de)serialização protobuf.
 - **Interoperabilidade:** teste que gera um changeset em Dart, lê em Go (e
   vice-versa), garantindo paridade do protocolo.

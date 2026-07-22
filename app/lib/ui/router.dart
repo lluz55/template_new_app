@@ -1,8 +1,8 @@
+import 'package:dl_concept/dl_concept.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import '../l10n/gen/app_localizations.dart';
-import 'nav/adaptive_scaffold.dart';
 import 'screens/items_screen.dart';
 import 'screens/settings_screen.dart';
 

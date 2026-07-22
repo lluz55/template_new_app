@@ -114,7 +114,7 @@ FILES=(
   cli/go.mod
   shared/proto/changeset.proto
   shared/PROTOCOL.md
-  knowledge/concepts/protocol.md
+  docs/okf/concepts/protocol.md
   scripts/bootstrap-platforms.sh
 )
 

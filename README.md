@@ -58,7 +58,7 @@ repositório. Resumo:
 | `app/`        | App Flutter (UI, domínio, store local, sync, cripto)   |
 | `cli/`        | CLI Go opcional (backup/export/import via Nostr)       |
 | `shared/`     | Protocolo compartilhado (protobuf) entre app e CLI     |
-| `knowledge/`  | Bundle OKF — conhecimento do domínio                   |
+| `docs/okf/`   | Bundle OKF — conhecimento do domínio                   |
 | `scripts/`    | Checagens de performance/qualidade (rodam local e CI)  |
 
 `app/android/`, `app/linux/` e `app/web/` (scaffolding nativa) não são

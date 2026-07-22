@@ -1,5 +1,5 @@
-/// Breakpoints Material 3 (SPEC §9) — celular/tablet/desktop como alvos de
-/// UX de primeira classe, não fallback um do outro.
+/// Breakpoints Material 3 — celular/tablet/desktop como alvos de UX de
+/// primeira classe, não fallback um do outro.
 enum AppBreakpoint { compact, medium, expanded }
 
 AppBreakpoint breakpointForWidth(double width) {

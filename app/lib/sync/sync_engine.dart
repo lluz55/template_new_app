@@ -6,7 +6,7 @@ import 'nostr/relay_pool.dart';
 
 /// Motor de sincronização (SPEC §7.2): traduz changesets/snapshots locais
 /// em eventos Nostr cifrados e vice-versa. Roda em segundo plano — a UI
-/// nunca depende dele para responder (ver knowledge/concepts/architecture.md).
+/// nunca depende dele para responder (ver docs/okf/concepts/architecture.md).
 ///
 /// Esqueleto da Fase 4 (SPEC §17): a estrutura e o fluxo (push/pull/
 /// bootstrap) seguem o SPEC à risca; a serialização protobuf real

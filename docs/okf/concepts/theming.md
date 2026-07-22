@@ -6,8 +6,9 @@ type: architecture-decision
 
 ## Decisão
 
-Existe um sistema de temas único em `app/lib/ui/theme/` — cor, tipografia e
-espaçamento nunca são hardcoded em widgets. Base: `ColorScheme.fromSeed`
+Existe um sistema de temas único no pacote reutilizável
+`packages/dl_concept/` — cor, tipografia e espaçamento nunca são hardcoded em
+widgets. Base: `ColorScheme.fromSeed`
 (Material 3) com Material You via `dynamic_color` (`DynamicColorBuilder`)
 quando o SO expõe paleta dinâmica; fallback determinístico por seed color
 nos demais casos (ver `AppTheme`). Tokens de espaçamento/raio vivem num
@@ -24,9 +25,11 @@ caçar quando o tema muda.
 
 ## Onde isso vive no código
 
-`app/lib/ui/theme/app_theme.dart` (`AppTheme.light/dark`),
-`app/lib/ui/theme/app_spacing.dart` (`AppSpacing`, `context.spacing`),
-wiring de Material You em `app/lib/main.dart` (`DynamicColorBuilder`).
+Pacote `packages/dl_concept/` (`package:dl_concept`):
+`lib/src/theme/app_theme.dart` (`AppTheme.light/dark`),
+`lib/src/theme/app_spacing.dart` (`AppSpacing`, `context.spacing`). Wiring de
+Material You em `app/lib/main.dart` (`DynamicColorBuilder`), que injeta o
+`ColorScheme` dinâmico em `AppTheme.light/dark`.
 
 Relacionado: [ui-adaptive.md](ui-adaptive.md), [i18n.md](i18n.md) (mesma
 lógica de "nunca hardcode, sempre token/recurso central" aplicada a texto).

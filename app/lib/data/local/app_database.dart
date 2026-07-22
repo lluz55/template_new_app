@@ -75,7 +75,7 @@ class AppDatabase {
   }
 
   /// Deltas desde o último watermark — consumido pelo sync engine para
-  /// publicar um changeset (SPEC §7.2). Ver knowledge/concepts/sync.md.
+  /// publicar um changeset (SPEC §7.2). Ver docs/okf/concepts/sync.md.
   Future<CrdtChangeset> changeset({Hlc? modifiedAfter}) =>
       crdt.getChangeset(modifiedAfter: modifiedAfter);
 

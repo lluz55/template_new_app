@@ -10,4 +10,4 @@ via [SemVer](https://semver.org/). Commits seguem
 - Fundação do template: `flake.nix` (devShells `app-linux`/`android`/`cli`),
   scaffold Flutter com navegação adaptativa e lista de exemplo local,
   scaffold da CLI Go, protocolo compartilhado (`shared/proto`), bundle de
-  conhecimento OKF (`knowledge/`) e scripts de checagem de performance.
+  conhecimento OKF (`docs/okf/`) e scripts de checagem de performance.

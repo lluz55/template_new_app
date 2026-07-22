@@ -3,7 +3,7 @@ import 'item.dart';
 /// Caso de uso / porta do domínio para o scaffold de itens. A implementação
 /// concreta (`app/lib/data/local/item_local_repository.dart`) fala com o
 /// store local — nunca com a rede diretamente (ver
-/// knowledge/concepts/architecture.md: "a UI só fala com o store local").
+/// docs/okf/concepts/architecture.md: "a UI só fala com o store local").
 abstract class ItemRepository {
   /// Emite a lista atual sempre que o store local mudar — inclusive quando
   /// a mudança vem de um changeset remoto aplicado pelo sync engine.

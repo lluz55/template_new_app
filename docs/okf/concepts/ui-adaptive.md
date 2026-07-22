@@ -32,7 +32,10 @@ plataformas não-priorizadas.
 
 ## Onde isso vive no código
 
-`app/lib/ui/nav/` (shell adaptativa), `app/lib/ui/theme/`. Testado com
-widget tests nos três breakpoints (ver `app/test/widget/`).
+Pacote `packages/dl_concept/` (`lib/src/nav/` — shell adaptativa,
+`lib/src/theme/`), consumido pelo app via `package:dl_concept` em
+`app/lib/ui/router.dart`. Testado com testes de unidade e widget tests
+próprios em `packages/dl_concept/test/`; o app cobre a integração completa
+em `app/test/widget/adaptive_nav_test.dart`.
 
 Relacionado: [architecture.md](architecture.md).

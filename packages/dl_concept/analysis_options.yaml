@@ -1,0 +1,12 @@
+include: package:flutter_lints/flutter.yaml
+
+linter:
+  rules:
+    # Performance (mesmos lints do app — ver scripts/check-flutter.sh)
+    - prefer_const_constructors
+    - prefer_const_constructors_in_immutables
+    - prefer_const_literals_to_create_immutables
+    - avoid_unnecessary_containers
+    - sized_box_for_whitespace
+    - unawaited_futures
+    - avoid_print

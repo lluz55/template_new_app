@@ -44,8 +44,9 @@ void main() {
         );
       });
 
-      test('cards são planos (elevation 0)', () {
+      test('cards são planos (elevation 0) e recortam o conteúdo', () {
         expect(theme.cardTheme.elevation, 0);
+        expect(theme.cardTheme.clipBehavior, Clip.antiAlias);
       });
 
       test('diálogos usam raio maior que botões/inputs', () {

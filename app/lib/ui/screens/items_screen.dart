@@ -28,22 +28,28 @@ class ItemsScreen extends ConsumerWidget {
             );
           }
           return ListView.builder(
-            padding: EdgeInsets.symmetric(vertical: context.spacing.sm),
+            padding: EdgeInsets.symmetric(
+              horizontal: context.spacing.md,
+              vertical: context.spacing.sm,
+            ),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              return CheckboxListTile(
-                key: ValueKey(item.id),
-                value: item.done,
-                title: Text(item.title),
-                onChanged: (done) => ref
-                    .read(itemRepositoryProvider)
-                    .toggleDone(item.id, done: done ?? false),
-                secondary: IconButton(
-                  icon: const Icon(Icons.delete_outline),
-                  tooltip: l10n.itemRemoveTooltip,
-                  onPressed: () =>
-                      ref.read(itemRepositoryProvider).remove(item.id),
+              return Card(
+                margin: EdgeInsets.only(bottom: context.spacing.sm),
+                child: CheckboxListTile(
+                  key: ValueKey(item.id),
+                  value: item.done,
+                  title: Text(item.title),
+                  onChanged: (done) => ref
+                      .read(itemRepositoryProvider)
+                      .toggleDone(item.id, done: done ?? false),
+                  secondary: IconButton(
+                    icon: const Icon(Icons.delete_outline),
+                    tooltip: l10n.itemRemoveTooltip,
+                    onPressed: () =>
+                        ref.read(itemRepositoryProvider).remove(item.id),
+                  ),
                 ),
               );
             },

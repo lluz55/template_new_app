@@ -111,10 +111,14 @@ class AppTheme {
       // Cards: plano (elevation 0) com cor de superfície tonal em vez de
       // sombra — mais consistente entre light/dark e com Material You
       // (sombra "neutra" ignora a cor dinâmica; tint de superfície não).
+      // `clipBehavior` explícito porque o padrão do Card é `Clip.none` — sem
+      // isso, o ripple de um filho interativo (ex.: `ListTile` dentro do
+      // card) vaza além do canto arredondado.
       cardTheme: CardThemeData(
         shape: componentShape,
         elevation: 0,
         color: colorScheme.surfaceContainer,
+        clipBehavior: Clip.antiAlias,
       ),
 
       // Diálogos: raio maior que botões/inputs — convenção de "superfície

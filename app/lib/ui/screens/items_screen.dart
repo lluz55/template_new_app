@@ -109,8 +109,11 @@ class ItemsScreen extends ConsumerWidget {
       destructive: true,
     );
 
-    if (confirmed) {
-      await ref.read(itemRepositoryProvider).remove(id);
+    if (!confirmed) return;
+
+    await ref.read(itemRepositoryProvider).remove(id);
+    if (context.mounted) {
+      showAppSnackBar(context, l10n.itemRemovedMessage(title));
     }
   }
 }

@@ -133,6 +133,26 @@ class AppTheme {
       floatingActionButtonTheme: FloatingActionButtonThemeData(
         shape: componentShape,
       ),
+
+      // AppBar: plana com título centralizado — mesma escolha "flat +
+      // tonal" dos cards, com um traço de identidade própria
+      // (`centerTitle`) em vez do left-aligned padrão do M3 no Android.
+      // `scrolledUnderElevation` mantém a affordance sutil de "conteúdo
+      // rolou por baixo" sem contradizer o resto do tema plano.
+      appBarTheme: AppBarThemeData(
+        backgroundColor: colorScheme.surface,
+        foregroundColor: colorScheme.onSurface,
+        elevation: 0,
+        scrolledUnderElevation: 1,
+        centerTitle: true,
+      ),
+
+      // SnackBar: flutuante com o mesmo raio dos outros componentes — sem
+      // isso ela sai com o padrão M3 (canto reto, fixa no rodapé).
+      snackBarTheme: SnackBarThemeData(
+        behavior: SnackBarBehavior.floating,
+        shape: componentShape,
+      ),
     );
   }
 }

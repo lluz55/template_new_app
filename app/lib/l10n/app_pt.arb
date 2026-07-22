@@ -23,6 +23,12 @@
       "title": { "type": "String" }
     }
   },
+  "itemRemovedMessage": "\"{title}\" removido.",
+  "@itemRemovedMessage": {
+    "placeholders": {
+      "title": { "type": "String" }
+    }
+  },
   "settingsScreenTitle": "Configurações",
   "settingsRelaysTitle": "Relays",
   "settingsRelaysSubtitle": "Toque para editar a lista de relays (SPEC §7.3).",

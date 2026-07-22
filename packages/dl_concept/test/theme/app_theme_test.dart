@@ -57,6 +57,21 @@ void main() {
           BorderRadius.circular(spacing.radius * 2),
         );
       });
+
+      test('AppBar é plana e com título centralizado', () {
+        expect(theme.appBarTheme.elevation, 0);
+        expect(theme.appBarTheme.centerTitle, isTrue);
+      });
+
+      test('SnackBar é flutuante e usa o mesmo raio dos outros componentes',
+          () {
+        final spacing = theme.extension<AppSpacing>()!;
+        expect(theme.snackBarTheme.behavior, SnackBarBehavior.floating);
+        expect(
+          (theme.snackBarTheme.shape as RoundedRectangleBorder).borderRadius,
+          BorderRadius.circular(spacing.radius),
+        );
+      });
     });
   }
 }

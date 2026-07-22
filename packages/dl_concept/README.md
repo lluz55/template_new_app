@@ -7,9 +7,10 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 
 - `AppTheme` / `AppSpacing` (`context.spacing`) — tokens de cor, tipografia e
   espaçamento; Material You via `ColorScheme` injetado por quem consome.
-  Também tema botões (`Filled`/`Outlined`/`Text`), inputs, cards, diálogos e
-  FAB via `*ThemeData` — widgets nativos do Flutter, sem wrapper próprio;
-  todos compartilham `AppSpacing.radius` como raio de canto.
+  Também tema botões (`Filled`/`Outlined`/`Text`), inputs, cards, diálogos,
+  FAB, `AppBar` (plana, título centralizado) e `SnackBar` (flutuante) via
+  `*ThemeData` — widgets nativos do Flutter, sem wrapper próprio; todos
+  compartilham `AppSpacing.radius` como raio de canto.
 - `AppBreakpoint` / `breakpointForWidth` — breakpoints Material 3
   (compact/medium/expanded).
 - `AdaptiveScaffold` / `AdaptiveDestination` — shell de navegação adaptativa
@@ -25,6 +26,9 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 - `AppEmptyState` — ícone + mensagem centralizados, para o par "sem
   dados"/"erro ao carregar" que aparece nos dois ramos não-`loading` de
   qualquer `AsyncValue.when()`; `iconColor` diferencia o caso de erro.
+- `showAppSnackBar` — ponto único de entrada para feedback transitório
+  (esconde a `SnackBar` anterior antes de mostrar a próxima); usado em
+  `ItemsScreen` para confirmar a remoção de um item.
 
 ## Uso
 

@@ -10,3 +10,4 @@ export 'src/nav/adaptive_scaffold.dart';
 export 'src/dialogs/text_input_dialog.dart';
 export 'src/dialogs/confirm_dialog.dart';
 export 'src/feedback/empty_state.dart';
+export 'src/feedback/snack_bar.dart';

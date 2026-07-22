@@ -72,6 +72,25 @@ void main() {
           BorderRadius.circular(spacing.radius),
         );
       });
+
+      test('Chips usam o mesmo raio e não têm borda', () {
+        final spacing = theme.extension<AppSpacing>()!;
+        expect(
+          (theme.chipTheme.shape as RoundedRectangleBorder).borderRadius,
+          BorderRadius.circular(spacing.radius),
+        );
+        expect(theme.chipTheme.side, BorderSide.none);
+      });
+
+      test('Bottom sheets arredondam só o topo, com raio maior', () {
+        final spacing = theme.extension<AppSpacing>()!;
+        final shape = theme.bottomSheetTheme.shape as RoundedRectangleBorder;
+        expect(
+          shape.borderRadius,
+          BorderRadius.vertical(top: Radius.circular(spacing.radius * 2)),
+        );
+        expect(theme.bottomSheetTheme.showDragHandle, isTrue);
+      });
     });
   }
 }

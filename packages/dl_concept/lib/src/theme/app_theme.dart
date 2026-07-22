@@ -153,6 +153,34 @@ class AppTheme {
         behavior: SnackBarBehavior.floating,
         shape: componentShape,
       ),
+
+      // Chips: raio compartilhado (em vez do stadium padrão do M3) e sem
+      // borda visível, mesma lógica dos inputs — a cor de fundo já basta
+      // pra indicar "isto é um chip". Genérico o bastante pra qualquer
+      // domínio (tags, filtros, categorias), não só o app de referência.
+      chipTheme: ChipThemeData(
+        shape: componentShape,
+        side: BorderSide.none,
+        backgroundColor: colorScheme.surfaceContainerHighest,
+        selectedColor: colorScheme.secondaryContainer,
+        labelStyle: TextStyle(color: colorScheme.onSurfaceVariant),
+        padding: EdgeInsets.symmetric(
+          horizontal: _spacing.sm,
+          vertical: _spacing.xs,
+        ),
+      ),
+
+      // Bottom sheets: canto arredondado só no topo (raio maior, mesma
+      // convenção dos diálogos) + handle de arraste nativo do M3 — sem
+      // isso, sai reto e sem indicação visual de que dá pra arrastar.
+      bottomSheetTheme: BottomSheetThemeData(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(_spacing.radius * 2),
+          ),
+        ),
+        showDragHandle: true,
+      ),
     );
   }
 }

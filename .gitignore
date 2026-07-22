@@ -52,3 +52,6 @@ app/lib/l10n/gen/
 *.iml
 *.swp
 .DS_Store
+
+# Registro de progresso do agente (rascunho de trabalho, não artefato do produto)
+.agent/

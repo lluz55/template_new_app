@@ -35,24 +35,40 @@ class ItemsScreen extends ConsumerWidget {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              return Card(
-                margin: EdgeInsets.only(bottom: context.spacing.sm),
-                child: CheckboxListTile(
+              return Padding(
+                padding: EdgeInsets.only(bottom: context.spacing.sm),
+                child: AppDismissibleListItem(
                   key: ValueKey(item.id),
-                  value: item.done,
-                  title: Text(item.title),
-                  onChanged: (done) => ref
-                      .read(itemRepositoryProvider)
-                      .toggleDone(item.id, done: done ?? false),
-                  secondary: IconButton(
-                    icon: const Icon(Icons.delete_outline),
-                    tooltip: l10n.itemRemoveTooltip,
-                    onPressed: () => _confirmAndRemoveItem(
-                      context,
-                      ref,
-                      l10n,
-                      id: item.id,
-                      title: item.title,
+                  confirmTitle: l10n.itemDeleteConfirmTitle,
+                  confirmMessage: l10n.itemDeleteConfirmMessage(item.title),
+                  cancelLabel: l10n.actionCancel,
+                  confirmLabel: l10n.itemRemoveTooltip,
+                  onConfirmedDismiss: () => _removeItem(
+                    context,
+                    ref,
+                    l10n,
+                    id: item.id,
+                    title: item.title,
+                  ),
+                  child: Card(
+                    margin: EdgeInsets.zero,
+                    child: CheckboxListTile(
+                      value: item.done,
+                      title: Text(item.title),
+                      onChanged: (done) => ref
+                          .read(itemRepositoryProvider)
+                          .toggleDone(item.id, done: done ?? false),
+                      secondary: IconButton(
+                        icon: const Icon(Icons.delete_outline),
+                        tooltip: l10n.itemRemoveTooltip,
+                        onPressed: () => _confirmAndRemoveItem(
+                          context,
+                          ref,
+                          l10n,
+                          id: item.id,
+                          title: item.title,
+                        ),
+                      ),
                     ),
                   ),
                 ),
@@ -93,6 +109,9 @@ class ItemsScreen extends ConsumerWidget {
     }
   }
 
+  /// Pede confirmação e remove — usado pelo botão de remover. O swipe-to-
+  /// delete (`AppDismissibleListItem`) já pede sua própria confirmação
+  /// antes de chamar [_removeItem] direto, sem passar por aqui.
   Future<void> _confirmAndRemoveItem(
     BuildContext context,
     WidgetRef ref,
@@ -109,8 +128,17 @@ class ItemsScreen extends ConsumerWidget {
       destructive: true,
     );
 
-    if (!confirmed) return;
+    if (!confirmed || !context.mounted) return;
+    await _removeItem(context, ref, l10n, id: id, title: title);
+  }
 
+  Future<void> _removeItem(
+    BuildContext context,
+    WidgetRef ref,
+    AppLocalizations l10n, {
+    required String id,
+    required String title,
+  }) async {
     await ref.read(itemRepositoryProvider).remove(id);
     if (context.mounted) {
       showAppSnackBar(context, l10n.itemRemovedMessage(title));

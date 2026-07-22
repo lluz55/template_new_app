@@ -11,3 +11,4 @@ export 'src/dialogs/text_input_dialog.dart';
 export 'src/dialogs/confirm_dialog.dart';
 export 'src/feedback/empty_state.dart';
 export 'src/feedback/snack_bar.dart';
+export 'src/lists/dismissible_list_item.dart';

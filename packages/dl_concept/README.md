@@ -29,6 +29,11 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 - `showAppSnackBar` — ponto único de entrada para feedback transitório
   (esconde a `SnackBar` anterior antes de mostrar a próxima); usado em
   `ItemsScreen` para confirmar a remoção de um item.
+- `AppDismissibleListItem` — item de lista com swipe-to-delete, pedindo
+  confirmação (via `showAppConfirmDialog`) antes de remover; complementa,
+  não substitui, uma ação de remover por botão (swipe é touch-only, então
+  quem consome ainda precisa de outra forma de remover para mouse/teclado).
+  Usado em `ItemsScreen` junto com o botão de remover já existente.
 
 ## Uso
 

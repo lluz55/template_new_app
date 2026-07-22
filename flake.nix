@@ -52,6 +52,14 @@
           libsecret
           sqlcipher
           jsoncpp
+          # Fase 2 abre o banco sem cifra de propósito (ver
+          # app/lib/data/local/app_database.dart:8-16) via sqflite_common_ffi
+          # puro, que faz dlopen de "libsqlite3.so" — sqlcipher acima só
+          # exporta "libsqlcipher.so", então sem este pacote o app crasha ao
+          # abrir o banco no desktop Linux. Quando a Fase 3 ligar SQLCipher
+          # (sqlite3_flutter_libs + PRAGMA key), reavaliar se ainda precisa
+          # dos dois.
+          sqlite
         ];
 
         goDeps = with pkgs; [ go protobuf protoc-gen-go ];
@@ -68,6 +76,7 @@
           app-linux = pkgs.mkShell {
             buildInputs = [ pkgs.flutter ] ++ linuxAppDeps;
             shellHook = ''
+              export LD_LIBRARY_PATH="${pkgs.lib.makeLibraryPath linuxAppDeps}:$LD_LIBRARY_PATH"
               echo "devShell app-linux: flutter $(flutter --version | head -n1)"
             '';
           };

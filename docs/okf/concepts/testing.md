@@ -39,6 +39,30 @@ progresso indeterminado** — pump explícito, ou espere por um finder
 específico do que o teste realmente precisa (não pelo "settle" da árvore
 inteira).
 
+## Armadilha: `sqflite_common_ffi` trava em `testWidgets` mesmo com `runAsync()`
+
+`AppDatabase.open/openInMemory` usa `sqflite_common_ffi`, que resolve toda
+consulta num **isolate real** em segundo plano (mesmo para `:memory:`).
+Isso funciona sem problema em `test()` puro/async
+(`item_local_repository_test.dart` prova isso — `await
+repository.watchAll().first` resolve normalmente). Mas **dentro de
+`testWidgets()`**, mesmo trocando `tester.pump()` por `tester.pump()`
+repetido ou por `tester.runAsync()`, a stream de `itemsProvider` pode nunca
+emitir — trava até o timeout do teste (10min), sem exceção nenhuma. É uma
+incompatibilidade conhecida entre a comunicação entre isolates do
+`sqflite_common_ffi` e o binding de teste do Flutter (`dart:isolate
+_RawReceivePort._handleMessage` aparece no stack trace do timeout).
+
+**Não tente contornar isso tentando esperar mais** (mais `pump()`,
+`runAsync()` maior, delay maior) — não resolve, só desperdiça tempo de
+diagnóstico. Para testar um widget que depende de uma `StreamProvider`
+sobre um repositório real, **teste contra um fake do repositório**
+(`Stream` local, sem `sqflite`) via `overrideWithValue` — ver
+`app/test/widget/items_screen_test.dart` (`_FakeItemRepository`). Reserve
+o banco real (`AppDatabase.open/openInMemory`) para os testes de
+`app/test/data/`, que já não têm esse problema por não passarem por
+`testWidgets`.
+
 ## Onde isso vive no código
 
 `scripts/perf-check.sh` não roda testes (isso é `dart analyze`/`flutter

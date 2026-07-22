@@ -49,3 +49,19 @@ data, o que mudou, por quê.
   reaproveitem o design system sem copy-paste, via git dependency apontando
   pro subdiretório `packages/dl_concept`. Escopo v1 é só relocação do que já
   existia — sem componentes novos.
+
+## 2026-07-22
+
+- Atualizado `testing`: nova armadilha — `sqflite_common_ffi` (isolate real
+  por trás de toda consulta) trava indefinidamente dentro de `testWidgets`,
+  mesmo com `tester.runAsync()`, sem lançar exceção. Descoberta investigando
+  um relato de "nenhum componente novo aparece na tela inicial": não havia
+  bug — nenhum teste populava `ItemsScreen` com dados reais antes
+  (`adaptive_nav_test.dart` só cobre a shell de navegação, com lista sempre
+  vazia). Corrigido testando `ItemsScreen` contra um `ItemRepository` fake
+  (`app/test/widget/items_screen_test.dart`), que prova a árvore renderiza
+  `Card`/`AppDismissibleListItem` corretamente com dados — sem depender do
+  banco real. Motivo: essa armadilha custou várias tentativas de diagnóstico
+  (aumentar `pump()`, tentar `runAsync()`) antes de identificar que o
+  problema era do binding de teste, não do código; vale documentar antes que
+  alguém repita o mesmo caminho.

@@ -22,9 +22,13 @@ class ItemsScreen extends ConsumerWidget {
       body: itemsAsync.when(
         data: (items) {
           if (items.isEmpty) {
-            return Center(child: Text(l10n.itemsEmptyState));
+            return Padding(
+              padding: EdgeInsets.all(context.spacing.lg),
+              child: Center(child: Text(l10n.itemsEmptyState)),
+            );
           }
           return ListView.builder(
+            padding: EdgeInsets.symmetric(vertical: context.spacing.sm),
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
@@ -45,8 +49,10 @@ class ItemsScreen extends ConsumerWidget {
             },
           );
         },
-        error: (error, stack) =>
-            Center(child: Text(l10n.itemsError(error.toString()))),
+        error: (error, stack) => Padding(
+          padding: EdgeInsets.all(context.spacing.lg),
+          child: Center(child: Text(l10n.itemsError(error.toString()))),
+        ),
         loading: () => const Center(child: CircularProgressIndicator()),
       ),
       floatingActionButton: FloatingActionButton(

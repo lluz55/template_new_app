@@ -5,7 +5,7 @@ import '../theme/app_spacing.dart';
 /// Ícone + mensagem centralizados, com o espaçamento do design system — o
 /// padrão repetido pelo estado "sem dados" e pelo estado "erro ao carregar"
 /// de qualquer tela em cima de um `AsyncValue`/`Stream` (mesmo par que
-/// aparece nos dois ramos de `itemsAsync.when()` em `ItemsScreen`). A
+/// aparece nos dois ramos de `itemsAsync.when()` em `ShowcaseScreen`). A
 /// diferença entre os dois casos é só o ícone e a cor: passe [iconColor]
 /// para o caso de erro (`colorScheme.error`); sem ele, usa
 /// `colorScheme.onSurfaceVariant`, neutro para o caso "vazio, mas sem erro".

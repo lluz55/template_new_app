@@ -18,23 +18,23 @@ extraído para ser reutilizável sem copy-paste entre projetos.
   (`NavigationBar`/`NavigationRail`/`NavigationDrawer`), integrada a
   `StatefulNavigationShell` do `go_router`.
 - `showAppTextInputDialog` — `AlertDialog` com um `TextField` e ações
-  cancelar/confirmar; extraído de `ItemsScreen`/`SettingsScreen`, que
+  cancelar/confirmar; extraído de `ShowcaseScreen`/`SettingsScreen`, que
   repetiam o mesmo padrão para pedir um texto curto ou multilinha.
 - `showAppConfirmDialog` — `AlertDialog` de confirmação simples
   (título/mensagem opcional + cancelar/confirmar), com variante
   `destructive` (botão de confirmar em `colorScheme.error`) para ações
-  irreversíveis; usado em `ItemsScreen` antes de remover um item.
+  irreversíveis; usado em `ShowcaseScreen` antes de remover um item.
 - `AppEmptyState` — ícone + mensagem centralizados, para o par "sem
   dados"/"erro ao carregar" que aparece nos dois ramos não-`loading` de
   qualquer `AsyncValue.when()`; `iconColor` diferencia o caso de erro.
 - `showAppSnackBar` — ponto único de entrada para feedback transitório
   (esconde a `SnackBar` anterior antes de mostrar a próxima); usado em
-  `ItemsScreen` para confirmar a remoção de um item.
+  `ShowcaseScreen` para confirmar a remoção de um item.
 - `AppDismissibleListItem` — item de lista com swipe-to-delete, pedindo
   confirmação (via `showAppConfirmDialog`) antes de remover; complementa,
   não substitui, uma ação de remover por botão (swipe é touch-only, então
   quem consome ainda precisa de outra forma de remover para mouse/teclado).
-  Usado em `ItemsScreen` junto com o botão de remover já existente.
+  Usado em `ShowcaseScreen` junto com o botão de remover já existente.
 - `showAppBottomSheet` — modal bottom sheet com a identidade visual do
   tema; ponto único de entrada, irmão dos `showApp*Dialog`, para nenhuma
   tela reconfigurar `isScrollControlled`/shape na mão.
@@ -44,9 +44,11 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 - `AppBadge` — selo pequeno de contagem/status (ponto simples sem
   `count`, número com `99+` acima de 99) — ex.: notificações não lidas.
 
-Os últimos três (`showAppBottomSheet`, `AppSectionHeader`, `AppBadge`) são
-genéricos por design — nenhum app consumidor deste template usa eles
-ainda. Ver "Escopo" abaixo.
+Os últimos três (`showAppBottomSheet`, `AppSectionHeader`, `AppBadge`) e
+os chips entraram sem um consumidor no app de referência primeiro —
+genéricos por design, ver "Escopo" abaixo. `ShowcaseScreen` (a tela
+inicial do app de referência) hoje demonstra todos eles lado a lado,
+junto com a lista com sync (CRDT) de verdade.
 
 ## Uso
 
@@ -73,12 +75,13 @@ Duas categorias de componente convivem aqui, de propósito:
    `showAppTextInputDialog`, `AppDismissibleListItem`) — o caminho
    padrão: nada entra sem um motivo concreto no código que já existe.
 2. **Genéricos, não amarrados ao domínio do app de referência** (uma
-   lista de itens) — o app de referência é só *um* dos projetos que este
-   template pode virar; outros (ex.: um app de configurações, um
-   dashboard) precisam de peças que uma lista de tarefas nunca vai usar
-   (`AppBadge`, `AppSectionHeader`, chips). Esses entram com a mesma
-   régua de qualidade (tema/tokens, testados, documentados aqui) mas sem
-   exigir um consumidor no app de referência primeiro.
+   lista de itens sincronizada por CRDT) — o app de referência é só *um*
+   dos projetos que este template pode virar; outros (ex.: um app de
+   configurações, um dashboard) precisam de peças que uma lista de
+   tarefas nunca vai usar (`AppBadge`, `AppSectionHeader`, chips). Esses
+   entram com a mesma régua de qualidade (tema/tokens, testados,
+   documentados aqui) mas sem exigir um consumidor no app de referência
+   primeiro.
 
 O que **não** entra em nenhuma categoria: componente decorativo sem uso
 claro em nenhum tipo de app plausível, ou reimplementação de um widget

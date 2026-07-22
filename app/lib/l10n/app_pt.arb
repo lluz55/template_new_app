@@ -1,7 +1,7 @@
 {
   "@@locale": "pt",
   "appTitle": "tpl_new_app",
-  "navItems": "Itens",
+  "navShowcase": "Vitrine",
   "navSettings": "Config",
   "itemsEmptyState": "Nenhum item ainda.",
   "itemRemoveTooltip": "Remover",
@@ -10,6 +10,8 @@
   "itemDialogHint": "Título",
   "actionCancel": "Cancelar",
   "actionAdd": "Adicionar",
+  "actionConfirm": "Confirmar",
+  "actionClose": "Fechar",
   "itemsError": "Erro: {error}",
   "@itemsError": {
     "placeholders": {
@@ -29,6 +31,38 @@
       "title": { "type": "String" }
     }
   },
+  "showcaseButtonsTitle": "Botões",
+  "showcaseChipsTitle": "Chips",
+  "showcaseChipLabel": "Chip {n}",
+  "@showcaseChipLabel": {
+    "placeholders": {
+      "n": { "type": "int" }
+    }
+  },
+  "showcaseBadgesTitle": "Selos",
+  "showcaseCardsTitle": "Cards",
+  "showcaseCardOneTitle": "Card simples",
+  "showcaseCardOneSubtitle": "Um exemplo de card temático",
+  "showcaseCardTwoTitle": "Card com ícone",
+  "showcaseCardTwoSubtitle": "Outro exemplo, com leading",
+  "showcaseDialogsTitle": "Diálogos",
+  "showcaseOpenTextDialogAction": "Diálogo de texto",
+  "showcaseOpenConfirmDialogAction": "Diálogo de confirmação",
+  "showcaseOpenBottomSheetAction": "Bottom sheet",
+  "showcaseTextDialogTitle": "Exemplo de diálogo",
+  "showcaseTextDialogHint": "Digite algo",
+  "showcaseTextDialogResultMessage": "Você digitou: \"{value}\"",
+  "@showcaseTextDialogResultMessage": {
+    "placeholders": {
+      "value": { "type": "String" }
+    }
+  },
+  "showcaseConfirmDialogTitle": "Confirmar ação de exemplo?",
+  "showcaseConfirmDialogMessage": "Isso é só uma demonstração — nada acontece de verdade.",
+  "showcaseConfirmedMessage": "Confirmado.",
+  "showcaseCancelledMessage": "Cancelado.",
+  "showcaseBottomSheetContent": "Conteúdo de exemplo do bottom sheet.",
+  "showcaseListTitle": "Lista com sync (CRDT)",
   "settingsScreenTitle": "Configurações",
   "settingsRelaysTitle": "Relays",
   "settingsRelaysSubtitle": "Toque para editar a lista de relays (SPEC §7.3).",

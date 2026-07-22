@@ -21,7 +21,7 @@ de sync quando a Fase 4 estiver implementada).
 
 ## Armadilha: `pumpAndSettle()` com spinner indeterminado
 
-`ItemsScreen` mostra um `CircularProgressIndicator` enquanto `itemsProvider`
+`ShowcaseScreen` mostra um `CircularProgressIndicator` enquanto `itemsProvider`
 não emite o primeiro valor. Um `CircularProgressIndicator` roda uma animação
 **indeterminada** (ticker que
 nunca para sozinho) — qualquer árvore de widgets que o contenha faz
@@ -58,7 +58,7 @@ _RawReceivePort._handleMessage` aparece no stack trace do timeout).
 diagnóstico. Para testar um widget que depende de uma `StreamProvider`
 sobre um repositório real, **teste contra um fake do repositório**
 (`Stream` local, sem `sqflite`) via `overrideWithValue` — ver
-`app/test/widget/items_screen_test.dart` (`_FakeItemRepository`). Reserve
+`app/test/widget/showcase_screen_test.dart` (`_FakeItemRepository`). Reserve
 o banco real (`AppDatabase.open/openInMemory`) para os testes de
 `app/test/data/`, que já não têm esse problema por não passarem por
 `testWidgets`.

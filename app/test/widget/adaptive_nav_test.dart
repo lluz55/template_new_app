@@ -16,13 +16,13 @@ void main() {
 
   tearDown(() => database.close());
 
-  /// Não usar `pumpAndSettle()` aqui: o corpo da tela (`ItemsScreen`) mostra
-  /// um `CircularProgressIndicator` enquanto `itemsProvider` não emite o
-  /// primeiro valor — é uma animação indeterminada (ticker que nunca para
-  /// sozinho), então `pumpAndSettle()` trava indefinidamente enquanto o
-  /// loading está de pé. Não é um deadlock do app: a shell de navegação
-  /// (o que este teste verifica) já está montada e estável bem antes disso,
-  /// então alguns `pump()` com frames explícitos bastam.
+  /// Não usar `pumpAndSettle()` aqui: a seção de sync da tela (`ShowcaseScreen`)
+  /// mostra um `CircularProgressIndicator` enquanto `itemsProvider` não
+  /// emite o primeiro valor — é uma animação indeterminada (ticker que
+  /// nunca para sozinho), então `pumpAndSettle()` trava indefinidamente
+  /// enquanto o loading está de pé. Não é um deadlock do app: a shell de
+  /// navegação (o que este teste verifica) já está montada e estável bem
+  /// antes disso, então alguns `pump()` com frames explícitos bastam.
   Future<void> pumpAtSize(WidgetTester tester, Size size) async {
     tester.view.physicalSize = size;
     tester.view.devicePixelRatio = 1.0;

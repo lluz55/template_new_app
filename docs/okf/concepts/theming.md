@@ -16,6 +16,16 @@ nos demais casos (ver `AppTheme`). Tokens de espaçamento/raio vivem num
 Light e dark são sempre implementados em paralelo — nunca uma feature só
 com um dos dois.
 
+Componentes comuns (botão, input, card, diálogo, FAB) **não** são
+widgets próprios — são temados via `*ThemeData` (`FilledButtonThemeData`,
+`InputDecorationThemeData`, `CardThemeData`, etc.) dentro de
+`AppTheme._themeFrom`, para que o widget nativo do Flutter
+(`FilledButton`, `TextField`, `Card`...) já saia com a cara do design
+system sem precisar de wrapper. Todos reusam `AppSpacing.radius` como
+raio de canto — a única decisão estética própria do template (o resto —
+cor, elevação base, tipografia — segue o padrão M3 derivado do
+`ColorScheme`, para não competir com Material You).
+
 ## Por quê
 
 Tratado como sistema desde o início (não retrofit) porque cor/spacing

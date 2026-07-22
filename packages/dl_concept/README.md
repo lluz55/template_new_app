@@ -7,6 +7,9 @@ extraído para ser reutilizável sem copy-paste entre projetos.
 
 - `AppTheme` / `AppSpacing` (`context.spacing`) — tokens de cor, tipografia e
   espaçamento; Material You via `ColorScheme` injetado por quem consome.
+  Também tema botões (`Filled`/`Outlined`/`Text`), inputs, cards, diálogos e
+  FAB via `*ThemeData` — widgets nativos do Flutter, sem wrapper próprio;
+  todos compartilham `AppSpacing.radius` como raio de canto.
 - `AppBreakpoint` / `breakpointForWidth` — breakpoints Material 3
   (compact/medium/expanded).
 - `AdaptiveScaffold` / `AdaptiveDestination` — shell de navegação adaptativa

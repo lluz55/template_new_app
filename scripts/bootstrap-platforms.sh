@@ -77,35 +77,92 @@ fi
 grep -q FLUTTER_GRADLE_TOOLING "$settings" 2>/dev/null \
   || echo "AVISO: não apliquei o patch FLUTTER_GRADLE_TOOLING em $settings (âncora do flutter create mudou?) — build Android na store read-only vai falhar sem ele."
 
-# 2) build.gradle.kts: elevar compileSdk de subprojetos < 36. Plugins fixam
-#    compileSdk antigo (ex.: 34) e deps transitivas (flutter_plugin_android_
-#    lifecycle) exigem >= 36 — sem isso quebra :<plugin>:checkReleaseAarMetadata.
+# 2) build.gradle.kts: normalizar compileSdk e buildToolsVersion dos subprojetos.
+#
+#    compileSdk: plugins fixam valores antigos (ex.: dynamic_color → 34,
+#    jni → 35) e o grafo resolvido exige o teto de quem pede mais — sem elevar,
+#    quebra :<plugin>:checkReleaseAarMetadata.
+#
+#    buildToolsVersion: o AGP 9.0.1 NÃO usa um default único quando ninguém
+#    declara — :app:minifyReleaseWithR8 pede 36.0.0 e :app:processReleaseResources
+#    procura o aapt2 em build-tools/35.0.0. Numa SDK read-only da /nix/store nada
+#    disso é auto-instalado, então o build falha em uma tarefa ou na outra
+#    dependendo de qual você pinou. Declarar explicitamente elimina o chute.
+#
+#    Os dois valores precisam casar com o que está pinado no devShell `android`
+#    do flake.nix (`platforms-android-<COMPILE_SDK_FLOOR>` e
+#    `build-tools-<BUILD_TOOLS_VERSION>`): ao subir aqui, suba lá no mesmo commit.
+COMPILE_SDK_FLOOR=37
+BUILD_TOOLS_VERSION=36.0.0
+
 build_gradle="android/build.gradle.kts"
 if [ -f "$build_gradle" ] && ! grep -q getCompileSdk "$build_gradle"; then
   tmp="$(mktemp)"
   while IFS= read -r line; do
     printf '%s\n' "$line" >>"$tmp"
     if [ "$line" = '    project.layout.buildDirectory.value(newSubprojectBuildDir)' ]; then
-      cat >>"$tmp" <<'KOTLIN'
+      cat >>"$tmp" <<KOTLIN
 
-    // Eleva para 36 o compileSdk de qualquer subprojeto Android abaixo disso.
-    // Registrado aqui (antes do evaluationDependsOn, que já dispara a avaliação)
-    // e via reflexão para não depender da assinatura tipada do AGP (muda entre
-    // versões maiores). No-op quando nenhum subprojeto está abaixo de 36.
+    // Eleva para ${COMPILE_SDK_FLOOR} o compileSdk de qualquer subprojeto Android abaixo disso
+    // e fixa buildToolsVersion em ${BUILD_TOOLS_VERSION} em todos eles. Registrado aqui
+    // (antes do evaluationDependsOn, que já dispara a avaliação) e via reflexão
+    // para não depender da assinatura tipada do AGP (muda entre versões maiores).
     // (Reaplicado por bootstrap-platforms.sh.)
     afterEvaluate {
         val android = extensions.findByName("android") ?: return@afterEvaluate
         val current = android.javaClass.methods
             .firstOrNull { it.name == "getCompileSdk" && it.parameterTypes.isEmpty() }
             ?.invoke(android) as? Int
-        if (current != null && current < 36) {
+        if (current != null && current < ${COMPILE_SDK_FLOOR}) {
             android.javaClass.methods
                 .firstOrNull {
                     it.name == "setCompileSdk" &&
                         it.parameterTypes.size == 1 &&
                         it.parameterTypes[0].name == "java.lang.Integer"
                 }
-                ?.invoke(android, 36)
+                ?.invoke(android, ${COMPILE_SDK_FLOOR})
+        }
+        android.javaClass.methods
+            .firstOrNull {
+                it.name == "setBuildToolsVersion" &&
+                    it.parameterTypes.size == 1 &&
+                    it.parameterTypes[0].name == "java.lang.String"
+            }
+            ?.invoke(android, "${BUILD_TOOLS_VERSION}")
+
+        // Registra src/main/kotlin no source set JAVA do subprojeto.
+        //
+        // Por quê: sob \`android.builtInKotlin=false\` (ver gradle.properties), um
+        // plugin que aplica o KGP por conta própria compila seu Kotlin — o .class
+        // aparece em intermediates/aar_main_jar — mas o AGP 9 NÃO o inclui no
+        // compile_library_classes_jar, que é o jar contra o qual os consumidores
+        // compilam. Resultado: o javac do :app falha em GeneratedPluginRegistrant
+        // com "cannot find symbol <Plugin>" mesmo o Kotlin tendo compilado.
+        // Plugins que já fazem \`main.java.srcDirs += 'src/main/kotlin'\` (ex.:
+        // dynamic_color) não sofrem disso; os que não fazem (ex.: package_info_plus)
+        // sofrem. Adicionar o diretório aqui iguala os dois casos.
+        //
+        // Idempotente (srcDir num set) e no-op em subprojeto sem src/main/kotlin.
+        val kotlinSrc = project.file("src/main/kotlin")
+        if (kotlinSrc.isDirectory) {
+            val sourceSets = android.javaClass.methods
+                .firstOrNull { it.name == "getSourceSets" && it.parameterTypes.isEmpty() }
+                ?.invoke(android)
+            val mainSet = sourceSets?.let { sets ->
+                sets.javaClass.methods
+                    .firstOrNull { it.name == "getByName" && it.parameterTypes.size == 1 }
+                    ?.invoke(sets, "main")
+            }
+            val javaSet = mainSet?.let { set ->
+                set.javaClass.methods
+                    .firstOrNull { it.name == "getJava" && it.parameterTypes.isEmpty() }
+                    ?.invoke(set)
+            }
+            javaSet?.let { js ->
+                js.javaClass.methods
+                    .firstOrNull { it.name == "srcDir" && it.parameterTypes.size == 1 }
+                    ?.invoke(js, kotlinSrc)
+            }
         }
     }
 KOTLIN
